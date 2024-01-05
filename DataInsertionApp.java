@@ -1,8 +1,8 @@
 import javax.swing.*;
 import javax.swing.table.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.*;
+import java.io.*;
 
 public class DataInsertionApp extends JFrame //Extend jframe in class
 {
@@ -13,9 +13,10 @@ public class DataInsertionApp extends JFrame //Extend jframe in class
     JTextField Salary;
     JButton insertButton;
 	JButton deleteButton;
+	JButton save;
+	JButton deletecol;
     DefaultTableModel tableModel;
     JTable dataTable;
-
     
 
     private void initComponents() 
@@ -25,7 +26,9 @@ public class DataInsertionApp extends JFrame //Extend jframe in class
 		Address = new JTextField(15);
 		Salary = new JTextField(15);
         insertButton = new JButton("Insert");
-		deleteButton = new JButton("Delete");
+		deleteButton = new JButton("Clear");
+		save = new JButton("Save");
+		deletecol = new JButton("DeleteColumn");
         tableModel = new DefaultTableModel();
         dataTable = new JTable(tableModel);
 
@@ -54,6 +57,8 @@ public class DataInsertionApp extends JFrame //Extend jframe in class
         inputPanel.add(Salary);
 		inputPanel.add(insertButton);
 		inputPanel.add(deleteButton);
+		inputPanel.add(save);
+		inputPanel.add(deletecol);
 
         add(inputPanel);
         add(new JScrollPane(dataTable));
@@ -76,6 +81,20 @@ public class DataInsertionApp extends JFrame //Extend jframe in class
                 deleteData();
             }
         });
+		save.addActionListener(new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				savefile();
+			}
+		});
+		deletecol.addActionListener(new ActionListener ()
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				delcol();
+			}
+		});
     }
 
     private void insertData() 
@@ -116,12 +135,48 @@ public class DataInsertionApp extends JFrame //Extend jframe in class
 	}
 	
 	
+	//delete column
+	public void delcol()
+	{
+		
+	}
+
+	
+	
+	// sav file
+	public void savefile()
+	{
+		try{
+			File file=new File("C:\\Users\\abhay\\OneDrive\\Desktop\\Data.txt");
+			if(!file.exists()){
+				file.createNewFile();
+			}
+			
+			FileWriter fw=new FileWriter(file.getAbsoluteFile());
+			BufferedWriter bw=new BufferedWriter(fw);
+			bw.write(dataTable.getModel()+"\n\nID |  Name  |  Address  |  Salary\n---------------------------------\n");
+			for(int i=0;i<dataTable.getRowCount();i++)
+			{
+				for(int j=0;j<dataTable.getColumnCount();j++){
+					bw.write(dataTable.getModel().getValueAt(i,j)+" | ");
+				}
+				bw.write("\n________________________\n");
+			}
+			bw.close();
+			fw.close();
+			JOptionPane.showMessageDialog(null,"Data Saved!!");
+		}catch(Exception ex){
+			ex.printStackTrace();
+		}
+			
+	}
+	
 	public DataInsertionApp() //class constructor
 	{
         setTitle("Data Insertion App");
         setSize(800, 800);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		
+		getContentPane().setBackground(Color.white);
         initComponents();
         layoutComponents();
         attachListeners();
