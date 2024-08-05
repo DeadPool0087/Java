@@ -1,1 +1,1 @@
-# DataInsertApp
+Its a practice for java
